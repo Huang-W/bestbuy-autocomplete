@@ -23,16 +23,40 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esutil"
 )
 
+type Product struct {
+	Sku        int       `json:"sku"`
+	Name     string    `json:"name"`
+	Type      string    `json:"type"`
+	Price float32 `json:"price"`
+	Upc    string    `json:"upc"`
+	Categories []Category `json:"category"`
+	Shipping interface{} `json:"shipping"`
+	Description string `json:"description"`
+	Manufacturer string `json:"manufacturer"`
+	Model string `json:"model"`
+	Url string `json:"url"`
+	Image string `jons:"image"`
+}
+
+type Category struct {
+	Id string `json:"id"`
+	Name  string `json:"name"`
+}
+
 var (
 	// batch int
+  indexFile string
   indexName  string
+  indexDocs string
 	numWorkers int
 	flushBytes int
   numItems int
 )
 
 func init() {
-  flag.StringVar(&indexName, "index", "test-bulk-example", "Index name")
+  flag.StringVar(&indexName, "name", "products", "Index name")
+  flag.StringVar(&indexFile, "def", "search/idx_products.json", "Create the index using this file")
+  flag.StringVar(&indexDocs, "docs", "data/products.json", "JSON array of documents to insert")
 	flag.IntVar(&numWorkers, "workers", runtime.NumCPU(), "Number of indexer workers")
 	flag.IntVar(&flushBytes, "flush", 5e+6, "Flush threshold in bytes")
 	flag.Parse()
@@ -114,7 +138,7 @@ func main() {
 
   // (Re)create the index
   //
-  f1, err := os.Open("es/idx_products.json")
+  f1, err := os.Open(indexFile)
   FailOnError(err, "unable to open index definition")
   defer f1.Close()
   r1 := bufio.NewReader(f1)
@@ -128,7 +152,7 @@ func main() {
   // BestBuy products dataset
   // https://github.com/BestBuyAPIs/open-data-set
   //
-  f2, err := os.Open("data/products.json")
+  f2, err := os.Open(indexDocs)
   FailOnError(err, "unable to open product data")
   defer f2.Close()
 
