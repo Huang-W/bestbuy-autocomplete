@@ -1,0 +1,23 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "bestbuy autocomplete web-server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Huang-W/bestbuy-autocomplete.git"
+  },
+  "author": "huang-w",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Huang-W/bestbuy-autocomplete/issues"
+  },
+  "homepage": "https://github.com/Huang-W/bestbuy-autocomplete#readme",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.10.0",
+    "express": "^4.17.1"
+  }
+}

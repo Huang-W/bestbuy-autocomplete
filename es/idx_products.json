@@ -1,0 +1,30 @@
+{
+	"settings": {
+		"number_of_shards": 5
+	},
+	"mappings": {
+		"properties": {
+			"sku": { "type": "integer", "index": false },
+			"name": {
+				"type": "search_as_you_type",
+				"index": true
+			},
+			"type": { "type": "text", "index": false },
+			"price": { "type": "float", "index": false },
+			"upc": { "type": "text", "index": false },
+			"category":  {
+				"type": "nested",
+				"properties": {
+					"id": { "type": "text", "index": false },
+					"name": { "type": "text", "index": false }
+				  }
+			},
+			"shipping": { "type": "float", "index": false, "coerce": true },
+			"description": { "type": "text", "index": false },
+			"manufacturer": { "type": "text", "index": false },
+			"model": { "type": "text", "index": false },
+			"url": { "type": "text", "index": false },
+			"image": { "type": "text", "index": false }
+		}
+	}
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bestbuy Autocomplete</title>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+</head>
+<body style="background-color:purple">
+  <div id="content" align="center" style="display:flex;flex-direction:column;margin-top:30vh">
+    <div class="ui-widget">
+      <label for="search" style="color:white">Search: </label>
+      <input id="search">
+    </div>
+  </div>
+  <footer>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+      // https://jqueryui.com/autocomplete
+      $( function() {
+        $( "#search" ).autocomplete({
+          source: function(request, response) {
+            $.ajax( {
+              url: `search/${request.term}`,
+              dataType: "json",
+              success: function(data) {
+                response(data);
+              }
+            })
+          }
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+          let terms = this.term.split(' ');
+          let newText = String(item.value);
+          for (let term of terms) {
+            let re = new RegExp(term, 'gi');
+            let found = newText.match(re);
+            if (found) found.forEach(match => {
+              newText = newText.replace(match, `<span class='ui-state-highlight'>${match}</span>`);
+            });
+          }
+          return $("<li></li>")
+              .data("item.autocomplete", item)
+              .append("<div>" + newText + "</div>")
+              .appendTo(ul);
+          };
+      })
+    </script>
+  </footer>
+</body>
+</html>
