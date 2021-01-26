@@ -1,62 +1,62 @@
 package main
 
 import (
-  "bufio"
-  "bytes"
-  "context"
-  "encoding/json"
-  "flag"
-  "fmt"
-  "log"
-  "os"
-  "math/rand"
-  "runtime"
-  "strings"
-  "sync/atomic"
-  "time"
+	"bufio"
+	"bytes"
+	"context"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+	"runtime"
+	"strings"
+	"sync/atomic"
+	"time"
 
-  "github.com/cenkalti/backoff/v4"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/dustin/go-humanize"
 
-  "github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/elastic/go-elasticsearch/v8/esutil"
 )
 
 type Product struct {
-	Sku        int       `json:"sku"`
-	Name     string    `json:"name"`
-	Type      string    `json:"type"`
-	Price float32 `json:"price"`
-	Upc    string    `json:"upc"`
-	Categories []Category `json:"category"`
-	Shipping interface{} `json:"shipping"`
-	Description string `json:"description"`
-	Manufacturer string `json:"manufacturer"`
-	Model string `json:"model"`
-	Url string `json:"url"`
-	Image string `jons:"image"`
+	Sku          int         `json:"sku"`
+	Name         string      `json:"name"`
+	Type         string      `json:"type"`
+	Price        float32     `json:"price"`
+	Upc          string      `json:"upc"`
+	Categories   []Category  `json:"category"`
+	Shipping     interface{} `json:"shipping"`
+	Description  string      `json:"description"`
+	Manufacturer string      `json:"manufacturer"`
+	Model        string      `json:"model"`
+	Url          string      `json:"url"`
+	Image        string      `jons:"image"`
 }
 
 type Category struct {
-	Id string `json:"id"`
-	Name  string `json:"name"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 var (
 	// batch int
-  indexFile string
-  indexName  string
-  indexDocs string
+	indexFile  string
+	indexName  string
+	indexDocs  string
 	numWorkers int
 	flushBytes int
-  numItems int
+	numItems   int
 )
 
 func init() {
-  flag.StringVar(&indexName, "name", "products", "Index name")
-  flag.StringVar(&indexFile, "def", "search/idx_products.json", "Create the index using this file")
-  flag.StringVar(&indexDocs, "docs", "data/products.json", "JSON array of documents to insert")
+	flag.StringVar(&indexName, "name", "products", "Index name")
+	flag.StringVar(&indexFile, "def", "search/idx_products.json", "Create the index using this file")
+	flag.StringVar(&indexDocs, "docs", "data/products.json", "JSON array of documents to insert")
 	flag.IntVar(&numWorkers, "workers", runtime.NumCPU(), "Number of indexer workers")
 	flag.IntVar(&flushBytes, "flush", 5e+6, "Flush threshold in bytes")
 	flag.Parse()
@@ -65,25 +65,25 @@ func init() {
 }
 
 func main() {
-  log.SetFlags(0)
+	log.SetFlags(0)
 
-  var (
-    countSuccessful uint64
-		res *esapi.Response
-		err error
-  )
+	var (
+		countSuccessful uint64
+		res             *esapi.Response
+		err             error
+	)
 
-  log.Printf(
+	log.Printf(
 		"\x1b[1mBulkIndexer\x1b[0m: workers [%d] flush [%s]",
 		numWorkers, humanize.Bytes(uint64(flushBytes)))
 	log.Println(strings.Repeat("▁", 65))
 
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	//
 	// Use a third-party package for implementing the backoff function
 	//
 	retryBackoff := backoff.NewExponentialBackOff()
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	//
@@ -110,8 +110,8 @@ func main() {
 		//
 		MaxRetries: 5,
 	})
-  FailOnError(err, "Error creating the elasticsearch client")
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	FailOnError(err, "Error creating the elasticsearch client")
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	//
@@ -127,63 +127,63 @@ func main() {
 		FlushBytes:    int(flushBytes),  // The flush threshold in bytes
 		FlushInterval: 30 * time.Second, // The periodic flush interval
 	})
-  FailOnError(err, "Error creating the indexer")
+	FailOnError(err, "Error creating the indexer")
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-  // Delete the index
+	// Delete the index
 	//
 	res, err = es.Indices.Delete([]string{indexName})
-  FailOnError(err, fmt.Sprintf("Cannot delete index: %s", indexName))
-  res.Body.Close()
+	FailOnError(err, fmt.Sprintf("Cannot delete index: %s", indexName))
+	res.Body.Close()
 
-  // (Re)create the index
-  //
-  f1, err := os.Open(indexFile)
-  FailOnError(err, "unable to open index definition")
-  defer f1.Close()
-  r1 := bufio.NewReader(f1)
+	// (Re)create the index
+	//
+	f1, err := os.Open(indexFile)
+	FailOnError(err, "unable to open index definition")
+	defer f1.Close()
+	r1 := bufio.NewReader(f1)
 	res, err = es.Indices.Create(indexName, es.Indices.Create.WithBody(r1))
-  FailOnError(err, "Cannot create index")
+	FailOnError(err, "Cannot create index")
 	if res.IsError() {
 		log.Fatalf("Cannot create index: %s", res)
 	}
-  res.Body.Close()
+	res.Body.Close()
 
-  // BestBuy products dataset
-  // https://github.com/BestBuyAPIs/open-data-set
-  //
-  f2, err := os.Open(indexDocs)
-  FailOnError(err, "unable to open product data")
-  defer f2.Close()
-
-  r2 := bufio.NewReader(f2)
-  dec := json.NewDecoder(r2)
-
-  start := time.Now().UTC()
-
-  // read open bracket
-  //
-  t, err := dec.Token()
-  FailOnError(err, fmt.Sprintf("Unable to read token %T: %v\n", t, t))
-
-  // Loop over the collection
+	// BestBuy products dataset
+	// https://github.com/BestBuyAPIs/open-data-set
 	//
-  numItems = 0
-  for dec.More() {
-    numItems++
-    // decode an array value (Product)
-    // might need to decode into "interface{}" instead of "Product"
-    //
-    var p Product
-    err = dec.Decode(&p)
-    FailOnError(err, "Unable to decode")
+	f2, err := os.Open(indexDocs)
+	FailOnError(err, "unable to open product data")
+	defer f2.Close()
 
-    // Prepare the data payload: encode article to JSON
-    //
-    data, err := json.Marshal(p)
-    FailOnError(err, fmt.Sprintf("Cannot encode article %d", numItems))
+	r2 := bufio.NewReader(f2)
+	dec := json.NewDecoder(r2)
 
-    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	start := time.Now().UTC()
+
+	// read open bracket
+	//
+	t, err := dec.Token()
+	FailOnError(err, fmt.Sprintf("Unable to read token %T: %v\n", t, t))
+
+	// Loop over the collection
+	//
+	numItems = 0
+	for dec.More() {
+		numItems++
+		// decode an array value (Product)
+		// might need to decode into "interface{}" instead of "Product"
+		//
+		var p Product
+		err = dec.Decode(&p)
+		FailOnError(err, "Unable to decode")
+
+		// Prepare the data payload: encode article to JSON
+		//
+		data, err := json.Marshal(p)
+		FailOnError(err, fmt.Sprintf("Cannot encode article %d", numItems))
+
+		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		//
 		// Add an item to the BulkIndexer
 		//
@@ -211,16 +211,16 @@ func main() {
 				},
 			},
 		)
-    FailOnError(err, "Unexpected error")
+		FailOnError(err, "Unexpected error")
 		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  }
+	}
 
-  // read closing bracket
-  //
-  t, err = dec.Token()
-  FailOnError(err, fmt.Sprintf("Unable to read token %T: %v\n", t, t))
+	// read closing bracket
+	//
+	t, err = dec.Token()
+	FailOnError(err, fmt.Sprintf("Unable to read token %T: %v\n", t, t))
 
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// Close the indexer
 	//
 	if err := bi.Close(context.Background()); err != nil {
@@ -256,14 +256,14 @@ func main() {
 
 // Helper Functions
 func FailOnError(err error, msg string) {
-        if err != nil {
-                log.Fatalf("%s: %s", msg, err)
-                panic(fmt.Sprintf("%s: %s", msg, err))
-        }
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+		panic(fmt.Sprintf("%s: %s", msg, err))
+	}
 }
 
 func WarnOnError(err error, msg string) {
-        if err != nil {
-                log.Println("%s: %s", msg, err)
-        }
+	if err != nil {
+		log.Println("%s: %s", msg, err)
+	}
 }
