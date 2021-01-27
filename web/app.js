@@ -5,7 +5,6 @@
  */
 "use strict";
 
-const http = require("http");
 const path = require("path");
 const express = require("express");
 const { Client } = require("@elastic/elasticsearch");
@@ -15,10 +14,25 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const port = 3000;
-const es_address = "localhost";
-const es_port = "9200";
+const deployment_type = process.env.DEPLOYMENT_TYPE;
 const es_index = "products";
+const port = 3000;
+let es_address;
+let es_port;
+switch (deployment_type) {
+  case "LOCAL":
+    es_address = "localhost";
+    es_port = "9200";
+    break;
+  case "DOCKER":
+    es_address = "es-node1";
+    es_port = "9200";
+    break;
+  case "ENV":
+    es_address = process.env.ES_ADDRESS;
+    es_port = process.env.ES_PORT;
+    break;
+}
 // Client for elasticsearch node
 //
 const es_client = new Client({ node: `http://${es_address}:${es_port}` });

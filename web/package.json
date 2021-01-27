@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "local": "DEPLOYMENT_TYPE=LOCAL node app.js",
+    "docker": "DEPLOYMENT_TYPE=DOCKER node app.js",
     "format": "prettier --write app.js public/index.html"
   },
   "repository": {

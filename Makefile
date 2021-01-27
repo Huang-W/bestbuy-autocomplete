@@ -13,3 +13,18 @@ local-insert:
 
 local-search:
 	curl -X GET localhost:9200/products/_search?pretty -H 'Content-Type: application/json' -d @$(f)
+
+es-shell:
+	docker exec -it es-node1 bash
+
+web-shell:
+	docker exec -it bestbuy-web bash
+
+format-tf:
+	terraform fmt -recursive .
+
+format-go:
+	gofmt -w -s .
+
+format-web:
+	npm --prefix ./web run format

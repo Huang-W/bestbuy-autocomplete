@@ -22,16 +22,22 @@
       <script type="text/javascript">
         // https://jqueryui.com/autocomplete
         $(function () {
+          let cache = new Map();
           $("#search")
             .autocomplete({
               source: function (request, response) {
-                $.ajax({
-                  url: `search/${request.term}`,
-                  dataType: "json",
-                  success: function (data) {
-                    response(data);
-                  },
-                });
+                if (cache.has(request.term)) {
+                  response(cache.get(request.term));
+                } else {
+                  $.ajax({
+                    url: `search/${request.term}`,
+                    dataType: "json",
+                    success: function (data) {
+                      cache.set(request.term, data);
+                      response(data);
+                    },
+                  });
+                }
               },
             })
             .autocomplete("instance")._renderItem = function (ul, item) {

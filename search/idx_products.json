@@ -1,7 +1,4 @@
 {
-	"settings": {
-		"number_of_shards": 5
-	},
 	"mappings": {
 		"properties": {
 			"sku": { "type": "integer", "index": false },
