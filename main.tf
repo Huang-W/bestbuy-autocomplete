@@ -33,12 +33,12 @@ variable "kube_config_context_web" {
 provider "docker" {}
 
 provider "kubernetes" {
-  alias = "elastic"
+  alias          = "elastic"
   config_path    = var.kube_config_path
   config_context = var.kube_config_context_elastic
 }
 provider "kubernetes" {
-  alias = "web"
+  alias          = "web"
   config_path    = var.kube_config_path
   config_context = var.kube_config_context_web
 }
@@ -59,7 +59,7 @@ provider "helm" {
 }
 
 resource "helm_release" "elastic" {
-  provider = helm.elastic
+  provider   = helm.elastic
   name       = "elasticsearch"
   repository = "https://helm.elastic.co"
   chart      = "elasticsearch"
@@ -73,7 +73,7 @@ resource "helm_release" "elastic" {
     value = "soft"
   }
   set {
-    name = "nodeGroup"
+    name  = "nodeGroup"
     value = "master"
   }
 }
@@ -102,17 +102,17 @@ resource "kubernetes_deployment" "node_web_deployment" {
       spec {
         container {
           image = "bestbuy-web:1.0"
-          name = "bestbuy-web"
+          name  = "bestbuy-web"
           env {
-            name = "DEPLOYMENT_TYPE"
+            name  = "DEPLOYMENT_TYPE"
             value = "ENV"
           }
           env {
-            name = "ES_ADDRESS"
+            name  = "ES_ADDRESS"
             value = "bestbuy-elastic-control-plane"
           }
           env {
-            name = "ES_PORT"
+            name  = "ES_PORT"
             value = 30080
           }
           port {
@@ -134,7 +134,7 @@ resource "kubernetes_service" "node_web_service" {
       name = "node-pod"
     }
     port {
-      port = 3000
+      port        = 3000
       target_port = 3000
     }
     type = "ClusterIP"
@@ -143,39 +143,39 @@ resource "kubernetes_service" "node_web_service" {
 }
 
 resource "helm_release" "elastic_ingress" {
-  provider = helm.elastic
+  provider   = helm.elastic
   name       = "elastic-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
   set {
-    name = "controller.service.type"
+    name  = "controller.service.type"
     value = "NodePort"
   }
   set {
-    name = "controller.service.nodePorts.http"
+    name  = "controller.service.nodePorts.http"
     value = 30080
   }
   set {
-    name = "controller.service.nodePorts.https"
+    name  = "controller.service.nodePorts.https"
     value = 30443
   }
 }
 
 resource "helm_release" "web_ingress" {
-  provider = helm.web
+  provider   = helm.web
   name       = "web-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
   set {
-    name = "controller.service.type"
+    name  = "controller.service.type"
     value = "NodePort"
   }
   set {
-    name = "controller.service.nodePorts.http"
+    name  = "controller.service.nodePorts.http"
     value = 31080
   }
   set {
-    name = "controller.service.nodePorts.https"
+    name  = "controller.service.nodePorts.https"
     value = 31443
   }
 }

@@ -45,13 +45,13 @@ type Category struct {
 
 var (
 	// batch int
-	indexFile  string
-	indexName  string
-	indexDocs  string
+	indexFile      string
+	indexName      string
+	indexDocs      string
 	elasticAddress string
-	numWorkers int
-	flushBytes int
-	numItems   int
+	numWorkers     int
+	flushBytes     int
+	numItems       int
 )
 
 func init() {
