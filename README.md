@@ -11,7 +11,7 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 - Kubernetes v1.19.1
 - Terraform v0.14.5
 
-#### Instructions (docker)
+#### Instructions (v3 - Local Kubernetes)
 
 - kind create cluster --config kind-configs/elastic-cluster.yaml --name bestbuy-elastic
 - kind create cluster --config kind-configs/web-cluster.yaml --name bestbuy-web
@@ -21,7 +21,7 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 - terraform apply
 - go build
 - ./es-indexer -addr="http://localhost:30080"
-- [go to localhost:31080](localhost:31080)
+- go to [localhost:31080](localhost:31080)
 
 #### Demo
 
