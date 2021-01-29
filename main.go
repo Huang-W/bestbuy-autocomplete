@@ -48,6 +48,7 @@ var (
 	indexFile  string
 	indexName  string
 	indexDocs  string
+	elasticAddress string
 	numWorkers int
 	flushBytes int
 	numItems   int
@@ -56,9 +57,10 @@ var (
 func init() {
 	flag.StringVar(&indexName, "name", "products", "Index name")
 	flag.StringVar(&indexFile, "def", "search/idx_products.json", "Create the index using this file")
-	flag.StringVar(&indexDocs, "docs", "data/products.json", "JSON array of documents to insert")
+	flag.StringVar(&indexDocs, "docs", "data/products.json", "JSON file of documents to insert")
+	flag.StringVar(&elasticAddress, "addr", "http://localhost:9200", "elasticsearch server - {protocol}://{hostname}:{port}")
 	flag.IntVar(&numWorkers, "workers", runtime.NumCPU(), "Number of indexer workers")
-	flag.IntVar(&flushBytes, "flush", 5e+6, "Flush threshold in bytes")
+	flag.IntVar(&flushBytes, "flush", 1e+6, "Flush threshold in bytes")
 	flag.Parse()
 
 	rand.Seed(time.Now().UnixNano())
@@ -93,6 +95,7 @@ func main() {
 	//       See an example in the "benchmarks" folder.
 	//
 	es, err := elasticsearch.NewClient(elasticsearch.Config{
+		Addresses: []string{elasticAddress},
 		// Retry on 429 TooManyRequests statuses
 		//
 		RetryOnStatus: []int{502, 503, 504, 429},

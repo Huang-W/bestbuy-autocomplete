@@ -2,19 +2,26 @@
 
 Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
-#### Requirements
-- Go 1.11+
-- Java 11
-- Docker-engine v20.10.2
+#### Software used
+- go1.15.6
+- Node v14.14.0
+- Docker version 20.10.2
+- Helm v3.5.0
+- Kind version 0.9.0
+- Kubernetes v1.19.1
 - Terraform v0.14.5
 
 #### Instructions (docker)
 
-1. terraform init
-2. terraform apply
-3. go run go/main.go
-4. [visit web page at localhost:3000](http://localhost:3000)
-5. terraform destroy
+- kind create cluster --config kind-configs/elastic-cluster.yaml --name bestbuy-elastic
+- kind create cluster --config kind-configs/web-cluster.yaml --name bestbuy-web
+- docker build -t bestbuy-web:1.0 -f ./web/Dockerfile ./web
+- kind load docker-image bestbuy-web:1.0 --name bestbuy-web
+- terraform init
+- terraform apply
+- go build
+- ./es-indexer -addr="http://localhost:30080"
+- [go to localhost:31080](localhost:31080)
 
 #### Demo
 

@@ -75,6 +75,10 @@ app.get("/search/:term?", async (req, res) => {
   );
 });
 
+app.get("/ping", (req, res) => {
+  res.send("ok");
+})
+
 // Serve static html and javascript
 //
 app.use(express.static(path.join(__dirname, "public")));
