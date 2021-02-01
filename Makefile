@@ -9,7 +9,6 @@ format-web:
 
 # v1 - Local
 #
-#
 local-start:
 	./elasticsearch-7.10.2/bin/elasticsearch -p /tmp/es-pid1 &
 	./elasticsearch-7.10.2/bin/elasticsearch -Epath.data=data2 -Epath.logs=log2 -p /tmp/es-pid2 &
@@ -28,7 +27,6 @@ local-search:
 
 # v2 - Docker
 #
-#
 docker-build:
 	docker build -t bestbuy-web:1.0 -f ./web/Dockerfile ./web
 
@@ -46,7 +44,6 @@ web-shell:
 	docker exec -it bestbuy-web bash
 
 # v3 - Kubernetes (local)
-#
 #
 web-context:
 	kubectl config use-context kind-bestbuy-web

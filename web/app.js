@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const deployment_type = process.env.DEPLOYMENT_TYPE;
 const es_index = "products";
-const port = 3000;
+const port = 80;
 let es_address;
 let es_port;
 switch (deployment_type) {
