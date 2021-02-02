@@ -13,7 +13,7 @@ build-job:
   before_script:
     - docker info
   script:
-    - docker build -t "CI_IMAGE" -f ./web/Dockerfile ./web
+    - docker build -t "$CI_IMAGE" -f ./web/Dockerfile ./web
     - docker build -t "$CI_IMAGE-test" -f ./web/Dockerfile.test ./web
     - docker run --rm "$CI_IMAGE-test"
     - if [ $? -ne 0 ]; then echo "Previous command failed"; fi;
