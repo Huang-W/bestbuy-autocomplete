@@ -2,12 +2,12 @@
 # Public Subnets
 ###########################################
 resource "aws_subnet" "public_1" {
-  vpc_id               = aws_vpc.bestbuy_vpc.id
-  cidr_block           = "10.1.0.0/24"
-  availability_zone_id = "usw2-az1"
+  vpc_id                  = aws_vpc.bestbuy_vpc.id
+  cidr_block              = "10.1.0.0/24"
+  availability_zone_id    = "usw2-az1"
   map_public_ip_on_launch = true
   tags = {
-    Name = "bestbuy"
+    Name    = "bestbuy"
     Network = "public"
   }
 }
@@ -35,7 +35,7 @@ resource "aws_subnet" "private_1" {
   cidr_block           = "10.1.3.0/24"
   availability_zone_id = "usw2-az1"
   tags = {
-    Name = "bestbuy"
+    Name    = "bestbuy"
     Network = "private"
   }
 }

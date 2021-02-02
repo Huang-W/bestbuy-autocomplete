@@ -3,3 +3,11 @@
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+tfplan
+tfback
+
+*.pdf
+*.json
+
+pkg/
+es-indexer

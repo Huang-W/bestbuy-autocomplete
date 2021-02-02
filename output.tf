@@ -10,10 +10,10 @@ output "web_server_ip" {
 
 output "web_server_private_ip" {
   description = "the web server's private ip"
-  value = aws_instance.web.private_ip
+  value       = aws_instance.web.private_ip
 }
 
 output "elasticsearch_private_ip" {
   description = "the elasticsearch node's private ip"
-  value = aws_instance.elastic.private_ip
+  value       = aws_instance.elastic.private_ip
 }

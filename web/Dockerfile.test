@@ -1,0 +1,9 @@
+FROM bestbuy-web
+
+COPY test ./test
+
+RUN npm install mocha
+
+ENV DEPLOYMENT_TYPE=LOCAL
+
+CMD ["./node_modules/mocha/bin/mocha", "--timeout=10000"]

@@ -2,7 +2,7 @@
 # https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml
 #
 resource "aws_vpc" "bestbuy_vpc" {
-  cidr_block = "10.1.0.0/16"
+  cidr_block       = "10.1.0.0/16"
   instance_tenancy = "default"
   tags = {
     Name = "bestbuy-vpc"
@@ -28,7 +28,7 @@ resource "aws_key_pair" "deployer" {
 }
 
 variable "my_home_network" {
-  type    = string
+  type = string
   # default = "0.0.0.0/0"
 }
 

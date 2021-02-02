@@ -33,8 +33,9 @@ docker-build:
 docker-run:
 	docker run --name bestbuy-web -td -p 3000:3000 \
 		-e DEPLOYMENT_TYPE=ENV \
-		-e ES_ADDRESS=$(addr) \
-		-e ES_PORT=$(port) \
+		-e ES_ADDRESS=localhost \
+		-e ES_PORT=9200 \
+		-e WEB_PORT=3000 \
 		bestbuy-web
 
 es-shell:

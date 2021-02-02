@@ -5,7 +5,7 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.igw.id
   }
   tags = {
-    Name = "bestbuy-subnets"
+    Name    = "bestbuy-subnets"
     Network = "public"
   }
 }
@@ -13,11 +13,11 @@ resource "aws_route_table" "public" {
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.bestbuy_vpc.id
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
   }
   tags = {
-    Name = "bestbuy-subnets"
+    Name    = "bestbuy-subnets"
     Network = "private"
   }
 }
