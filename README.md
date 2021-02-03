@@ -8,11 +8,6 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 - Docker version 20.10.2
 - Terraform v0.14.5
 
-#### Terraform Input
-
-- `my_home_network: your public ipv4 address as cidr block`
-- `my_aws_public_key: the public key associated with each ec2 instance`
-
 #### Demo
 
 ![demo](images/local.gif)

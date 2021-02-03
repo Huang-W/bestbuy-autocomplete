@@ -1,40 +1,25 @@
-stages:
-  - build
-  - test
-  - deploy
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
 
-build-job:
-  stage: build
+stages:
+  - docker-build
+
+docker-build:
+  stage: docker-build
   image: docker:19.03.12
+  only:
+    - master
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   services:
     - docker:19.03.12-dind
   before_script:
-    - docker info
+    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
   script:
     - docker build -t "$CI_IMAGE" -f ./web/Dockerfile ./web
     - docker build -t "$CI_IMAGE-test" -f ./web/Dockerfile.test ./web
     - docker run --rm "$CI_IMAGE-test"
     - if [ $? -ne 0 ]; then echo "Previous command failed"; fi;
     - docker rmi "$CI_IMAGE-test"
-    - docker tag "$CI_IMAGE" "$CI_REGISTRY/$CI_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker push "$CI_REGISTRY/$CI_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
-
-test-job1:
-  stage: test
-  script:
-    - echo "This job tests something"
-
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
-
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+    - docker tag "$CI_IMAGE" "$CI_REGISTRY/$CI_DEPLOY_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY/$CI_DEPLOY_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
