@@ -43,8 +43,8 @@ const es_client = new Client({
   requestTimeout: 1000,
 });
 
-// same-origin endpoint for backend search engine queries
-app.get("/search/:term?", async (req, res) => {
+// for elasticsearch queries
+app.get("/search/:term?", (req, res) => {
   let search_term = req.params.term;
   // console.log(`GET /search/${search_term}`);
   es_client.search(

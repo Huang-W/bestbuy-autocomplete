@@ -58,5 +58,13 @@ get-all:
 get-pods:
 	kubectl get pods
 
-pod-dsnutils:
+pod-dnsutils:
 	kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
+
+# v4 - AWS cloud
+#
+ssh-ec2:
+	ssh -i $(pem) ec2-user@$(addr)
+
+scp-ec2:
+	scp -i $(pem) $(f) ec2-user@$(addr):/home/ec2-user

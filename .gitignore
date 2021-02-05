@@ -1,4 +1,5 @@
 .auto.tfvars
+.terraform.tfstate.lock.info
 .terraform.lock.hcl
 .terraform/
 terraform.tfstate
