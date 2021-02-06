@@ -1,33 +1,13 @@
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
-# https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+#######################################################
+# Verify - on branches
+#######################################################
 
-stages:
-  - docker-build
-  - kube-deploy
 
-docker-build:
-  stage: docker-build
-  image: docker:19.03.12
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
-  services:
-    - docker:19.03.12-dind
-  before_script:
-    - docker info
-  script:
-    - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
-    - docker build -t "$ECR_REPO-test" -f ./web/Dockerfile.test ./web
-    - docker run --rm "$ECR_REPO-test"
-    - if [ $? -ne 0 ]; then echo "Previous command failed"; fi;
-    - docker rmi "$ECR_REPO-test"
-    - docker tag "$ECR_REPO" "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
-    - docker push "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
+#######################################################
+# Package - on merge
+#######################################################
 
-kube-deploy:
-  image: bitnami/kubectl:latest
-  stage: kube-deploy
-  services:
-    - docker:19.03.12-dind
-  script:
-    - aws eks update-kubeconfig --name bestbuy-web
-    - kubectl set image deployment/node-deployment bestbuy-web="$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG" --namespace default
+
+#######################################################
+# Release - manual deploy
+#######################################################
