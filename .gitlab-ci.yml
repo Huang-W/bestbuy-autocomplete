@@ -8,8 +8,6 @@ stages:
 docker-build:
   stage: docker-build
   image: docker:19.03.12
-  only:
-    - master
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   services:
@@ -28,8 +26,6 @@ docker-build:
 kube-deploy:
   image: bitnami/kubectl:latest
   stage: kube-deploy
-  only:
-    - master
   services:
     - docker:19.03.12-dind
   script:
