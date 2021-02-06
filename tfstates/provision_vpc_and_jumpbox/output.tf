@@ -1,5 +1,5 @@
 output "aws_region" {
-    value = var.region
+  value = var.region
 }
 
 output "aws_load_balancer_iam_policy" {
@@ -7,11 +7,16 @@ output "aws_load_balancer_iam_policy" {
 }
 
 output "ecr_url" {
-  value = data.aws_ecr_authorization_token.bestbuy.proxy_endpoint
+  description = "your private registry url for this region"
+  value       = data.aws_ecr_authorization_token.bestbuy.proxy_endpoint
 }
 
-output "ecr_repo_name" {
+output "ecr_repo_bestbuy" {
   value = aws_ecr_repository.bestbuy.name
+}
+
+output "ecr_repo_elastic" {
+  value = aws_ecr_repository.elastic_indexer.name
 }
 
 output "vpc_id" {
@@ -19,7 +24,8 @@ output "vpc_id" {
 }
 
 output "vpc_private_subnets" {
-  value = module.vpc.private_subnets
+  description = "list of this vpc's private subnet ids"
+  value       = module.vpc.private_subnets
 }
 
 output "vpc_private_subnet_cidrs" {
@@ -27,7 +33,8 @@ output "vpc_private_subnet_cidrs" {
 }
 
 output "vpc_public_subnets" {
-  value = module.vpc.public_subnets
+  description = "list of this vpc's public subnet ids"
+  value       = module.vpc.public_subnets
 }
 
 output "vpc_public_subnet_cidrs" {
@@ -39,7 +46,7 @@ output "jumpbox_key_pair_fingerprint" {
 }
 
 output "jumpbox_key_pair_private_pem" {
-  value = tls_private_key.this.private_key_pem
+  value     = tls_private_key.this.private_key_pem
   sensitive = true
 }
 

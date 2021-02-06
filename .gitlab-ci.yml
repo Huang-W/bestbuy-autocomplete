@@ -3,6 +3,7 @@
 
 stages:
   - docker-build
+  - kube-deploy
 
 docker-build:
   stage: docker-build
@@ -14,12 +15,23 @@ docker-build:
   services:
     - docker:19.03.12-dind
   before_script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+    - docker info
   script:
-    - docker build -t "$CI_IMAGE" -f ./web/Dockerfile ./web
-    - docker build -t "$CI_IMAGE-test" -f ./web/Dockerfile.test ./web
-    - docker run --rm "$CI_IMAGE-test"
+    - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
+    - docker build -t "$ECR_REPO-test" -f ./web/Dockerfile.test ./web
+    - docker run --rm "$ECR_REPO-test"
     - if [ $? -ne 0 ]; then echo "Previous command failed"; fi;
-    - docker rmi "$CI_IMAGE-test"
-    - docker tag "$CI_IMAGE" "$CI_REGISTRY/$CI_DEPLOY_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker push "$CI_REGISTRY/$CI_DEPLOY_USER/$CI_IMAGE:$CI_COMMIT_REF_SLUG"
+    - docker rmi "$ECR_REPO-test"
+    - docker tag "$ECR_REPO" "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
+    - docker push "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
+
+kube-deploy:
+  image: bitnami/kubectl:latest
+  stage: kube-deploy
+  only:
+    - master
+  services:
+    - docker:19.03.12-dind
+  script:
+    - aws eks update-kubeconfig --name bestbuy-web
+    - kubectl set image deployment/node-deployment bestbuy-web="$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG" --namespace default

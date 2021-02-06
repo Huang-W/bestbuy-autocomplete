@@ -2,15 +2,14 @@ provider "aws" {
   region = data.terraform_remote_state.vpc.outputs.aws_region
 }
 
-module "eks_elastic" {
+module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "14.0.0"
 
-  cluster_name                = var.cluster_name
-  cluster_version             = "1.18"
-  subnets                     = data.terraform_remote_state.vpc.outputs.vpc_private_subnets
-  vpc_id                      = data.terraform_remote_state.vpc.outputs.vpc_id
-  worker_sg_ingress_from_port = 53
+  cluster_name    = var.cluster_name
+  cluster_version = "1.18"
+  subnets         = data.terraform_remote_state.vpc.outputs.vpc_private_subnets
+  vpc_id          = data.terraform_remote_state.vpc.outputs.vpc_id
 
   # attach_worker_cni_policy = false
   # enable_irsa = true
@@ -22,12 +21,12 @@ module "eks_elastic" {
   worker_groups = [
     {
       name                          = "eks_elastic_nodes"
-      instance_type                 = "t2.medium"
-      additional_security_group_ids = [module.elastic_node_sg.this_security_group_id]
-      asg_desired_capacity          = 3
-      asg_max_size                  = 5
-      asg_min_size                  = 3
+      instance_type                 = "t2.small"
+      asg_desired_capacity          = 1
+      asg_max_size                  = 3
+      asg_min_size                  = 1
       key_name                      = module.key_pair.this_key_pair_key_name
+      additional_security_group_ids = [module.web_node_sg.this_security_group_id]
     }
   ]
 }

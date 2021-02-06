@@ -8,7 +8,7 @@ output "node_key_pair_private_pem" {
 }
 
 output "cluster_id" {
-  value = module.eks_elastic.cluster_id
+  value = module.eks.cluster_id
 }
 
 output "aws_region" {
@@ -29,7 +29,7 @@ output "eks_cluster_ca_cert" {
 }
 
 output "eks_cluster_oidc_issuer_url" {
-  value = module.eks_elastic.cluster_oidc_issuer_url
+  value = module.eks.cluster_oidc_issuer_url
 }
 
 output "ecr_url" {
@@ -37,6 +37,6 @@ output "ecr_url" {
   value       = data.terraform_remote_state.vpc.outputs.ecr_url
 }
 
-output "ecr_repo_elastic" {
-  value = data.terraform_remote_state.vpc.outputs.ecr_repo_elastic
+output "ecr_repo_bestbuy" {
+  value = data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy
 }

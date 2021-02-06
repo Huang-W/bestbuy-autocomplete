@@ -14,3 +14,5 @@ es-indexer
 
 helm-configs/
 kind-configs/
+
+kubeconfig_*

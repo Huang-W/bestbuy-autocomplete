@@ -3,12 +3,24 @@ resource "aws_ecr_repository" "bestbuy" {
   image_tag_mutability = "IMMUTABLE"
 }
 
-resource "aws_ecr_repository_policy" "ecr_policy" {
+resource "aws_ecr_repository" "elastic_indexer" {
+  name                 = "elastic_indexer"
+  image_tag_mutability = "IMMUTABLE"
+}
+
+resource "aws_ecr_repository_policy" "ecr_policy_bestbuy" {
   repository = aws_ecr_repository.bestbuy.name
-  policy = data.aws_iam_policy_document.ecr_policy.json
+  policy     = data.aws_iam_policy_document.ecr_policy.json
+}
+
+resource "aws_ecr_repository_policy" "ecr_policy_elastic" {
+  repository = aws_ecr_repository.elastic_indexer.name
+  policy     = data.aws_iam_policy_document.ecr_policy.json
 }
 
 data "aws_ecr_authorization_token" "bestbuy" {}
+
+data "aws_ecr_authorization_token" "elastic_indexer" {}
 
 data "aws_iam_policy_document" "ecr_policy" {
   statement {
@@ -28,7 +40,7 @@ data "aws_iam_policy_document" "ecr_policy" {
       "ecr:SetRepositoryPolicy",
       "ecr:DeleteRepositoryPolicy"
     ]
-    effect  = "Allow"
+    effect = "Allow"
 
     principals {
       identifiers = ["*"]

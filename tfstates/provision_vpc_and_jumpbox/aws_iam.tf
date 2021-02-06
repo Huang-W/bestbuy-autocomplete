@@ -1,7 +1,7 @@
 resource "aws_iam_policy" "policy" {
-    name = "AWSLoadBalancerControllerIAMPolicy"
-    description = "allows AWS Load Balancer Controller to make calls to AWS APIs"
-    policy = <<EOF
+  name        = "AWSLoadBalancerControllerIAMPolicy"
+  description = "allows AWS Load Balancer Controller to make calls to AWS APIs"
+  policy      = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
