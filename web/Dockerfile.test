@@ -1,4 +1,4 @@
-FROM bestbuy-web
+FROM bestbuy:latest
 
 COPY test ./test
 

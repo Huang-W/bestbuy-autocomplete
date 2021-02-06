@@ -22,4 +22,4 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 
 #### Demo
 
-![demo](images/local.gif)
+![demo](images/cloud.gif)
