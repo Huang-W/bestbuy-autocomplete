@@ -1,13 +1,27 @@
-#######################################################
-# Verify - on branches
-#######################################################
+stages:
+  - test
+  - build
+  - deploy
 
+test:
+  stage: test
+  image: node:14
+  script:
+    - echo "Running tests"
+    - npm --prefix ./web install ./web
+    - npm --prefix ./web install mocha
+    - npm --prefix ./web run test
 
-#######################################################
-# Package - on merge
-#######################################################
+build:
+  stage: build
+  script: echo "Building the app"
 
-
-#######################################################
-# Release - manual deploy
-#######################################################
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: staging
+    url: https://staging.example.com
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
