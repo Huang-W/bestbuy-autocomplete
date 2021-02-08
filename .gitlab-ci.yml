@@ -1,3 +1,6 @@
+variables:
+  PRIVATE_ECR_IMAGE: 438167243279.dkr.ecr.us-west-2.amazonaws.com/bestbuy:1.0
+
 stages:
   - test
   - build
@@ -11,6 +14,12 @@ test:
     - npm --prefix ./web install ./web
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
+
+test-runner-pull:
+  stage: test
+  image: $PRIVATE_ECR_IMAGE
+  script:
+    - echo "Hello World!"
 
 build:
   stage: build
