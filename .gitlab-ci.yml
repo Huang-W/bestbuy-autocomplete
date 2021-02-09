@@ -5,6 +5,7 @@ variables:
 .only-default: &only-default
   only:
     - master
+    - branches
     - merge_requests
     - tags
 
