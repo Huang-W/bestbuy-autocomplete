@@ -39,6 +39,7 @@ deploy_staging:
     name: bitnami/kubectl:1.18
     entrypoint: [""]
   script:
+    - cp --no-preserve=all /tmp/config /.kube/config
     - kubectl config use-context "arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA
     - kubectl rollout restart deployment/node-deployment
