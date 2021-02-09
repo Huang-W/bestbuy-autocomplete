@@ -39,8 +39,11 @@ docker-build:
 
 deploy_staging:
   stage: deploy
+  image:
+    name: bitnami/kubectl:1.18
+    entrypoint: [""]
   script:
-    - echo "Deploy to staging server"
+    - kubectl config view
   environment:
     name: staging
     url: https://staging.example.com
