@@ -46,9 +46,11 @@ deploy_staging:
   image:
     name: gcr.io/cloud-builders/kubectl:latest
   script:
-    - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - cluster="arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
+    - kubectl config set-cluster $cluster --server="$KUBE_URL" --insecure-skip-tls-verify=true
     - kubectl config set-credentials admin --token="$KUBE_TOKEN"
-    - kubectl config use-context "arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
+    - kubectl config set-context $cluster --cluster=$cluster --user=admin
+    - kubectl config use-context $cluster
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA
     - kubectl rollout restart deployment/node-deployment
   rules:
