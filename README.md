@@ -2,10 +2,6 @@
 
 Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
-#### Architecture
-
-![demo](images/bestbuy-vpc.gif)
-
 #### Terraform workspaces
 - tfstates/provision_vpc_and_jumpbox
 - tfstates/provision_elastic_cluster
@@ -22,6 +18,10 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/), to install kubernetes packages
 - [Docker engine](https://docs.docker.com/get-docker/)
+
+#### Architecture
+
+![arch](images/bestbuy-vpc.png)
 
 #### Demo
 
