@@ -52,7 +52,6 @@ deploy_staging:
     - kubectl config set-context $cluster --cluster=$cluster --user=admin
     - kubectl config use-context $cluster
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA --namespace=default
-    - kubectl rollout restart deployment/node-deployment
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "master"'

@@ -60,6 +60,7 @@ resource "kubernetes_deployment" "node_web_deployment" {
         container {
           name  = "bestbuy-web"
           image = replace("${data.terraform_remote_state.eks_web.outputs.ecr_url}/${data.terraform_remote_state.eks_web.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
+          image_pull_policy = "Always"
           env {
             name  = "DEPLOYMENT_TYPE"
             value = "ENV"
