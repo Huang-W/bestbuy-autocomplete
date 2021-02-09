@@ -36,15 +36,13 @@ docker-build:
 deploy_staging:
   stage: deploy
   image:
-    name: bitnami/kubectl:1.18
-    entrypoint: [""]
-  before_script:
-    - context=$(kubectl config current-context)
-    - if [ $context -dne "arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$ECR_REPO-web" ]; then echo "context should be web" && exit 1; fi;
+    name: gcr.io/cloud-builders/kubectl:latest
   script:
+    - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --token="$KUBE_TOKEN"
+    - kubectl config use-context "arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA
     - kubectl rollout restart deployment/node-deployment
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
