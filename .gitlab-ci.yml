@@ -12,6 +12,8 @@ stages:
 
 mocha-test:
   <<: *only-default
+  tags:
+    - test
   stage: test
   image: node:14
   script:
@@ -21,6 +23,9 @@ mocha-test:
     - npm --prefix ./web run test
 
 docker-build:
+  tags:
+    - docker
+    - dind
   stage: build
   image: docker:19.03.15
   services:
@@ -34,6 +39,9 @@ docker-build:
     - if: '$CI_COMMIT_BRANCH == "master"'
 
 deploy_staging:
+  tags:
+    - cluster
+    - kubernetes
   stage: deploy
   image:
     name: gcr.io/cloud-builders/kubectl:latest
