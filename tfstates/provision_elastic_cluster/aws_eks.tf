@@ -10,7 +10,6 @@ module "eks_elastic" {
   cluster_version             = "1.18"
   subnets                     = data.terraform_remote_state.vpc.outputs.vpc_private_subnets
   vpc_id                      = data.terraform_remote_state.vpc.outputs.vpc_id
-  worker_sg_ingress_from_port = 53
 
   # attach_worker_cni_policy = false
   # enable_irsa = true

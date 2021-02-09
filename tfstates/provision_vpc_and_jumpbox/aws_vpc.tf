@@ -20,7 +20,7 @@ module "vpc" {
   private_subnets         = var.vpc_private_subnets
   public_subnets          = var.vpc_public_subnets
   enable_nat_gateway      = true
-  single_nat_gateway      = true # a single NAT gateway is shared among the private subnets
+  single_nat_gateway      = true # one NAT gateway in one AZ
   map_public_ip_on_launch = true
 
   public_subnet_tags = {
