@@ -1,12 +1,12 @@
 variables:
-  PRIVATE_ECR_IMAGE: 438167243279.dkr.ecr.us-west-2.amazonaws.com/bestbuy:1.0
+  ECR_REPO: bestbuy
+  ECR_URI: 438167243279.dkr.ecr.us-west-2.amazonaws.com
 
 stages:
   - test
   - build
-  - deploy
 
-test:
+mocha-test:
   stage: test
   image: node:14
   script:
@@ -15,19 +15,17 @@ test:
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
 
-test-runner-pull:
-  stage: test
-  image: $PRIVATE_ECR_IMAGE
-  script:
-    - echo "Hello World!"
-
-test-dind-pull:
-  stage: test
+docker-build:
+  stage: build
   image: docker:19.03.15
   services:
     - docker:19.03.15-dind
   script:
-    - docker pull $PRIVATE_ECR_IMAGE
+    - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
+    - docker tag "$ECR_REPO" "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
+    - docker push "$ECR_URI/$ECR_REPO:$CI_COMMIT_REF_SLUG"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "merge_request_event"'
 
 deploy_staging:
   stage: deploy
@@ -38,3 +36,4 @@ deploy_staging:
     url: https://staging.example.com
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
