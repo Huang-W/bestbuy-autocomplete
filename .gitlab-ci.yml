@@ -5,6 +5,7 @@ variables:
 stages:
   - test
   - build
+  - deploy
 
 mocha-test:
   stage: test
