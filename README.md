@@ -2,6 +2,10 @@
 
 Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
+#### Architecture
+
+![demo](images/bestbuy-vpc.gif)
+
 #### Terraform workspaces
 - tfstates/provision_vpc_and_jumpbox
 - tfstates/provision_elastic_cluster

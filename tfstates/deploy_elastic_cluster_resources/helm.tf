@@ -41,4 +41,5 @@ data "kubernetes_service" "ilb" {
   metadata {
     name = "elasticsearch-master"
   }
+  depends_on = [helm_release.elastic]
 }
