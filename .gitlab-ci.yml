@@ -21,9 +21,13 @@ test-runner-pull:
   script:
     - echo "Hello World!"
 
-build:
-  stage: build
-  script: echo "Building the app"
+test-dind-pull:
+  stage: test
+  image: docker:19.03.15
+  services:
+    - docker:19.03.15-dind
+  script:
+    - docker pull $PRIVATE_ECR_IMAGE
 
 deploy_staging:
   stage: deploy
