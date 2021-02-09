@@ -1,7 +1,3 @@
-variables:
-  ECR_REPO: bestbuy
-  ECR_URI: 438167243279.dkr.ecr.us-west-2.amazonaws.com
-
 .only-default: &only-default
   only:
     - master
@@ -31,8 +27,8 @@ docker-build:
     - docker:19.03.15-dind
   script:
     - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
-    - docker tag "$ECR_REPO" "$ECR_URI/$ECR_REPO:$CI_COMMIT_SHORT_SHA"
-    - docker push "$ECR_URI/$ECR_REPO:$CI_COMMIT_SHORT_SHA"
+    - docker tag "$ECR_REPO" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
+    - docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -43,10 +39,9 @@ deploy_staging:
     name: bitnami/kubectl:1.18
     entrypoint: [""]
   script:
-    - kubectl config view
-  environment:
-    name: staging
-    url: https://staging.example.com
+    - kubectl config use-context "arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
+    - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA
+  environment: production
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH == "master"'
