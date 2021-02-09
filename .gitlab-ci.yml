@@ -2,12 +2,19 @@ variables:
   ECR_REPO: bestbuy
   ECR_URI: 438167243279.dkr.ecr.us-west-2.amazonaws.com
 
+.only-default: &only-default
+  only:
+    - master
+    - merge_requests
+    - tags
+
 stages:
   - test
   - build
   - deploy
 
 mocha-test:
+  <<: *only-default
   stage: test
   image: node:14
   script:
