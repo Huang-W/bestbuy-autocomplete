@@ -1,4 +1,4 @@
-### BestBuy Autocomplete (v4 - AWS Cloud - standalone instances)
+### BestBuy Autocomplete
 
 Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
