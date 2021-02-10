@@ -1,26 +1,3 @@
-provider "aws" {
-  region = data.terraform_remote_state.vpc.outputs.aws_region
-}
-
-data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.vpc.outputs.eks_elastic
-}
-
-provider "kubernetes" {
-  host                   = data.terraform_remote_state.vpc.outputs.eks_elastic_endpoint
-  cluster_ca_certificate = base64decode(data.terraform_remote_state.vpc.outputs.eks_elastic_ca_cert)
-  exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
-    command     = "aws"
-    args = [
-      "eks",
-      "get-token",
-      "--cluster-name",
-      data.terraform_remote_state.vpc.outputs.eks_elastic
-    ]
-  }
-}
-
 # https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
@@ -36,6 +13,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
   }
 }
 
+// a one-off job to index and populate the elasticsearch cluster
 resource "kubernetes_job" "init_elastic" {
   metadata {
     name = "init-elasticsearch-index"

@@ -1,6 +1,12 @@
-### BestBuy Autocomplete
+### BestBuy - autocomplete
 
-Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
+#### Problem statement
+
+Consider BestBuy wants some advice on how to implement an autocomplete feature that provides real-
+time, low latency suggestions as a user types in a search phrase for their global user base. They currently
+have a product catalogue of around 3 million objects and only want to autocomplete the product name.
+
+Data Resources: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
 #### Terraform workspaces
 - tfstates/provision_vpc_and_eks
@@ -17,9 +23,13 @@ Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/
 - [helm](https://helm.sh/), to install kubernetes packages
 - [Docker engine](https://docs.docker.com/get-docker/)
 
-#### Architecture
+#### Option 1
 
-![arch](images/bestbuy-vpc.png)
+![arch1](images/bestbuy-arch1.png)
+
+#### Option 2
+
+![arch2](images/bestbuy-arch2.png)
 
 #### Demo
 

@@ -6,6 +6,8 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+# The web deployment needs to point at the elasticsearch load balancer
+###############################################################
 data "terraform_remote_state" "eks_elastic" {
   backend = "local"
 
