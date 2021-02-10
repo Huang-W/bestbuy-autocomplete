@@ -3,9 +3,7 @@
 Dataset used: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
 
 #### Terraform workspaces
-- tfstates/provision_vpc_and_jumpbox
-- tfstates/provision_elastic_cluster
-- tfstates/provision_web_cluster
+- tfstates/provision_vpc_and_eks
 - tfstates/deploy_elastic_cluster_resources
 - tfstates/deploy_web_cluster_resources
 
