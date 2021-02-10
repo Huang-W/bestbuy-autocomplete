@@ -27,10 +27,6 @@ Data Resources: [https://github.com/BestBuyAPIs/open-data-set](https://github.co
 
 ![arch1](images/bestbuy-arch1.png)
 
-#### Option 2
-
-![arch2](images/bestbuy-arch2.png)
-
 #### Demo
 
 ![demo](images/cloud.gif)
