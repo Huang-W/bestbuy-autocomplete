@@ -1,8 +1,8 @@
-data "terraform_remote_state" "eks_web" {
+data "terraform_remote_state" "vpc" {
   backend = "local"
 
   config = {
-    path = "../provision_web_cluster/terraform.tfstate"
+    path = "../provision_vpc_and_eks/terraform.tfstate"
   }
 }
 

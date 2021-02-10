@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-doc$/
+    - if: $CI_COMMIT_MESSAGE =~ /(-doc$)|(-clean$)/
       when: never
     - when: always
 

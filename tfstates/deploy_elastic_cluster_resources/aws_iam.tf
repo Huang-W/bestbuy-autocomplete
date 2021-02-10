@@ -1,9 +1,9 @@
 data "tls_certificate" "example" {
-  url = data.terraform_remote_state.eks.outputs.eks_cluster_oidc_issuer_url
+  url = data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url
 }
 
 resource "aws_iam_openid_connect_provider" "default" {
-  url = data.terraform_remote_state.eks.outputs.eks_cluster_oidc_issuer_url
+  url = data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url
   client_id_list = [
     "sts.amazonaws.com"
   ]
@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.terraform_remote_state.eks.outputs.eks_cluster_oidc_issuer_url, "https://", "")}:sub"
+      variable = "${replace(data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
     }
 
@@ -34,5 +34,5 @@ resource "aws_iam_role" "aws_load_balancer_controller" {
 
 resource "aws_iam_role_policy_attachment" "test_attach" {
   role       = aws_iam_role.aws_load_balancer_controller.name
-  policy_arn = data.terraform_remote_state.eks.outputs.aws_load_balancer_iam_policy
+  policy_arn = data.terraform_remote_state.vpc.outputs.aws_load_balancer_iam_policy
 }

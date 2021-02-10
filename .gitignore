@@ -8,6 +8,7 @@ tfplan
 tfback
 
 *.pdf
+*.log
 
 pkg/
 es-indexer

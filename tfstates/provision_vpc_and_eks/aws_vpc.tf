@@ -1,13 +1,3 @@
-provider "aws" {
-  region                  = var.region
-  shared_credentials_file = "~/.aws/credentials"
-  profile                 = "default"
-  ignore_tags {
-    # ignore any state-changes due to eks-related tags assigned in the upper modules
-    key_prefixes = ["kubernetes.io/cluster/"]
-  }
-}
-
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
@@ -23,13 +13,16 @@ module "vpc" {
   single_nat_gateway      = false
   map_public_ip_on_launch = true
 
+  # these tags allow the EKS clusters to discover these subnets
   public_subnet_tags = {
-    "kubernetes.io/cluster/bestbuy-web"     = "shared"
-    "kubernetes.io/cluster/bestbuy-elastic" = "shared"
+    "kubernetes.io/cluster/${var.eks_web}"     = "shared"
+    "kubernetes.io/cluster/${var.eks_elastic}" = "shared"
     "kubernetes.io/role/elb"                = "1"
   }
 
   private_subnet_tags = {
+    "kubernetes.io/cluster/${var.eks_web}"     = "shared"
+    "kubernetes.io/cluster/${var.eks_elastic}" = "shared"
     "kubernetes.io/role/internal-elb" = "1"
   }
 }

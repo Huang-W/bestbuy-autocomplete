@@ -26,3 +26,13 @@ variable "vpc_public_subnets" {
 variable "my_home_network" {
   type = string
 }
+
+variable "eks_web" {
+  type = string
+  default = "bestbuy-web"
+}
+
+variable "eks_elastic" {
+  type = string
+  default = "bestbuy-elastic"
+}

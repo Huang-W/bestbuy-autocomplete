@@ -1,14 +1,14 @@
 provider "aws" {
-  region = data.terraform_remote_state.eks_web.outputs.aws_region
+  region = data.terraform_remote_state.vpc.outputs.aws_region
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.eks_web.outputs.cluster_id
+  name = data.terraform_remote_state.vpc.outputs.eks_web
 }
 
 provider "kubernetes" {
-  host                   = data.terraform_remote_state.eks_web.outputs.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(data.terraform_remote_state.eks_web.outputs.eks_cluster_ca_cert)
+  host                   = data.terraform_remote_state.vpc.outputs.eks_web_endpoint
+  cluster_ca_certificate = base64decode(data.terraform_remote_state.vpc.outputs.eks_web_ca_cert)
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
@@ -16,7 +16,7 @@ provider "kubernetes" {
       "eks",
       "get-token",
       "--cluster-name",
-      data.terraform_remote_state.eks_web.outputs.cluster_id
+      data.terraform_remote_state.vpc.outputs.eks_web
     ]
   }
 }
@@ -59,7 +59,7 @@ resource "kubernetes_deployment" "node_web_deployment" {
       spec {
         container {
           name  = "bestbuy-web"
-          image = replace("${data.terraform_remote_state.eks_web.outputs.ecr_url}/${data.terraform_remote_state.eks_web.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
+          image = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
           image_pull_policy = "Always"
           env {
             name  = "DEPLOYMENT_TYPE"
@@ -95,7 +95,7 @@ resource "kubernetes_service" "node_web_service" {
       name = "node-pod"
     }
     port {
-      port        = 8080
+      port        = 80
       target_port = 3000
     }
     type = "LoadBalancer"

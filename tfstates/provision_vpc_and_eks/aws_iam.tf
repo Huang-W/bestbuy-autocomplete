@@ -1,3 +1,6 @@
+###############################################################
+# IAM - A policy that allows EKS to create load balancers using the AWS API
+###############################################################
 resource "aws_iam_policy" "policy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   description = "allows AWS Load Balancer Controller to make calls to AWS APIs"

@@ -1,14 +1,14 @@
 provider "aws" {
-  region = data.terraform_remote_state.eks.outputs.aws_region
+  region = data.terraform_remote_state.vpc.outputs.aws_region
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.eks.outputs.cluster_id
+  name = data.terraform_remote_state.vpc.outputs.eks_elastic
 }
 
 provider "kubernetes" {
-  host                   = data.terraform_remote_state.eks.outputs.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.eks_cluster_ca_cert)
+  host                   = data.terraform_remote_state.vpc.outputs.eks_elastic_endpoint
+  cluster_ca_certificate = base64decode(data.terraform_remote_state.vpc.outputs.eks_elastic_ca_cert)
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
@@ -16,7 +16,7 @@ provider "kubernetes" {
       "eks",
       "get-token",
       "--cluster-name",
-      data.terraform_remote_state.eks.outputs.cluster_id
+      data.terraform_remote_state.vpc.outputs.eks_elastic
     ]
   }
 }
@@ -46,7 +46,7 @@ resource "kubernetes_job" "init_elastic" {
       spec {
         container {
           name    = "go-runner"
-          image   = replace("${data.terraform_remote_state.eks.outputs.ecr_url}/${data.terraform_remote_state.eks.outputs.ecr_repo_elastic}:1.0", "https://", "")
+          image   = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_elastic}:1.0", "https://", "")
           command = ["/go/bin/es-indexer", "-addr=http://${data.kubernetes_service.ilb.status[0].load_balancer[0].ingress[0].hostname}:9200"]
         }
         restart_policy = "Never"

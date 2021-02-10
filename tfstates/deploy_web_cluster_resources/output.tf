@@ -1,5 +1,5 @@
 /**
 output "web_alb_hostname" {
-  value = kubernetes_ingress.web_ingress.status[0].load_balancer[0].ingress[0].hostname
+  value = kubernetes_service.node_web_service.status[0].load_balancer[0].ingress[0].hostname
 }
 */
