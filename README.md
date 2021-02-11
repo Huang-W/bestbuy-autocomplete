@@ -25,7 +25,15 @@ Data Resources: [https://github.com/BestBuyAPIs/open-data-set](https://github.co
 
 #### Option 1
 
+Option 1 is an example of a full deployment with self-managed services. The autocomplete function would be merged with existing web code. This architecture is suited for horizontal scaling, if a future increase in users, search queries, or products is expected.
+
 ![arch1](images/bestbuy-arch1.png)
+
+#### Option 2
+
+Other options include using managed services or serverless functions to reduce complexity. Of course, any of the components from option 1 and 2 can be mixed, depending on needs and expectations.
+
+![arch2](images/bestbuy-arch2.png)
 
 #### Demo
 
