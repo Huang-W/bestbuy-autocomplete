@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-doc\s*$/ || $CI_COMMIT_MESSAGE =~ /-clean\s*$/
+    - if: $CI_COMMIT_MESSAGE =~ /-doc\s*$/ || $CI_COMMIT_BRANCH == "pre-commit" || $CI_COMMIT_BRANCH == "gitlab-ci"
       when: never
     - when: always
 
@@ -9,7 +9,7 @@ stages:
   - build
   - deploy
 
-mocha-test:
+test_web:
   tags:
     - test
   stage: test
@@ -20,12 +20,12 @@ mocha-test:
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-    - if: '$CI_COMMIT_BRANCH != null'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_TAG != null'
+      when: never
+    - if: "$CI_COMMIT_BRANCH != null"
+    - if: "$CI_COMMIT_TAG != null"
 
-docker-build:
+build_web:
   tags:
     - docker
     - dind
@@ -38,10 +38,12 @@ docker-build:
     - docker tag "$ECR_REPO" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
     - docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - changes: web/
+    - when: manual
 
-deploy_staging:
+deploy_web:
   tags:
     - cluster
     - kubernetes
@@ -56,5 +58,7 @@ deploy_staging:
     - kubectl config use-context $cluster
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA --namespace=default
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
+    - changes: web/
+    - when: manual
