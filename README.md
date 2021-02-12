@@ -15,10 +15,17 @@ have a product catalogue of around 3 million objects and only want to autocomple
 - Using open-source tools/technology is preferred
 - Serving a global user base with low latency
 - What are some ways they could generate the autocomplete data?
-- What types of systems could be used to store and serve the autocomplete data? 
+- What types of systems could be used to store and serve the autocomplete data?
 
 #### Data Resources:
-- [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
+- Sample dataset: [https://github.com/BestBuyAPIs/open-data-set](https://github.com/BestBuyAPIs/open-data-set)
+- Try out [BestBuy's search engine](https://www.bestbuy.com/) for better understanding.
+
+#### CI/CD Flow:
+- Use Terraform to build basic infrastructure on public cloud (VPC, Subnet, security group, VMs, k8s, etc)
+- Use public gitlab/github to store your code.
+- Pack your autocomplete frontend app code in a docker container and deploy it in Kubernetes cluster.
+- You can use gitlab-runner or Jenkins as your CICD tools to automate the flow from git => build => deploy in kubernetes cluster.
 
 #### Option 1
 
@@ -34,12 +41,11 @@ have a product catalogue of around 3 million objects and only want to autocomple
 
 #### Terraform workspaces
 - tfstates/provision_vpc_and_eks
-- tfstates/deploy_elastic_cluster_resources
-- tfstates/deploy_web_cluster_resources
+- tfstates/deploy_kubernetes_resources
 
 #### Software used
 - the latest version of [Terraform](https://www.terraform.io/)
-- [wget](https://www.gnu.org/software/wget/), to retrieve terraform modules
+- [wget](https://www.gnu.org/software/wget/), required for aws eks module
 - an [AWS account](https://portal.aws.amazon.com/billing/signup?nc2=h_ct&src=default&redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start) with IAM permissions listed on the [EKS module documentation](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/iam-permissions.md)
 - a configured [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 - [AWS IAM Authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
