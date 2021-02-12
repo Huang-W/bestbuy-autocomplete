@@ -13,6 +13,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
   }
 }
 
+
 resource "kubernetes_deployment" "node_web_deployment" {
   metadata {
     name = "node-deployment"
@@ -44,7 +45,7 @@ resource "kubernetes_deployment" "node_web_deployment" {
           }
           env {
             name  = "ES_ADDRESS"
-            value = data.terraform_remote_state.eks_elastic.outputs.elastic_ilb_hostname
+            value = data.kubernetes_service.elastic.metadata.0.name
           }
           env {
             name  = "ES_PORT"

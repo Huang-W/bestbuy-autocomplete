@@ -8,28 +8,11 @@ module "jumpbox_sg" {
   ingress_cidr_blocks = [var.my_home_network]
 }
 
-module "elastic_node_sg" {
+module "node_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = "elastic-nodes"
-  description = "security group for elastisearch nodes with 9200 and 9300 open to VPC private subnets, and ssh port open to jumpbox"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress_cidr_blocks = var.vpc_private_subnets
-  ingress_rules       = ["elasticsearch-rest-tcp", "elasticsearch-java-tcp"]
-  ingress_with_source_security_group_id = [
-    {
-      rule                     = "ssh-tcp"
-      source_security_group_id = module.jumpbox_sg.this_security_group_id
-    }
-  ]
-}
-
-module "web_node_sg" {
-  source = "terraform-aws-modules/security-group/aws"
-
-  name        = "web-nodes"
-  description = "security group for elastisearch nodes with http open to VPC private subnets, and ssh port open to jumpbox"
+  name        = "eks-node-group"
+  description = "security group for eks worker nodes with http open to VPC subnets, and ssh port open to jumpbox"
   vpc_id      = module.vpc.vpc_id
 
   ingress_cidr_blocks = concat(var.vpc_public_subnets, var.vpc_private_subnets)

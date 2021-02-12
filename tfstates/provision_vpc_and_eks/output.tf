@@ -26,25 +26,15 @@ output "ecr_repo_elastic" {
 ###############################################################
 # EKS
 ###############################################################
-output "eks_elastic_endpoint" {
-  value = data.aws_eks_cluster.elastic.endpoint
+output "eks_endpoint" {
+  value = data.aws_eks_cluster.cluster.endpoint
 }
-output "eks_elastic_ca_cert" {
-  value     = data.aws_eks_cluster.elastic.certificate_authority.0.data
+output "eks_ca_cert" {
+  value     = data.aws_eks_cluster.cluster.certificate_authority.0.data
   sensitive = true
 }
-output "eks_elastic_oidc_issuer_url" {
-  value = module.eks_elastic.cluster_oidc_issuer_url
-}
-output "eks_web_endpoint" {
-  value = data.aws_eks_cluster.web.endpoint
-}
-output "eks_web_ca_cert" {
-  value     = data.aws_eks_cluster.web.certificate_authority.0.data
-  sensitive = true
-}
-output "eks_web_oidc_issuer_url" {
-  value = module.eks_web.cluster_oidc_issuer_url
+output "eks_oidc_issuer_url" {
+  value = module.eks.cluster_oidc_issuer_url
 }
 ###############################################################
 
@@ -56,21 +46,14 @@ output "jumpbox_key_pair_fingerprint" {
   value = module.key_pair_jumpbox.this_key_pair_fingerprint
 }
 output "jumpbox_key_pair_private_pem" {
-  value     = tls_private_key.a.private_key_pem
+  value     = tls_private_key.jumpbox.private_key_pem
   sensitive = true
 }
-output "elastic_key_pair_fingerprint" {
-  value = module.key_pair_elastic.this_key_pair_fingerprint
+output "eks_key_pair_fingerprint" {
+  value = module.key_pair_eks.this_key_pair_fingerprint
 }
-output "elastic_key_pair_private_pem" {
-  value     = tls_private_key.b.private_key_pem
-  sensitive = true
-}
-output "web_key_pair_fingerprint" {
-  value = module.key_pair_web.this_key_pair_fingerprint
-}
-output "web_key_pair_private_pem" {
-  value     = tls_private_key.c.private_key_pem
+output "eks_key_pair_private_pem" {
+  value     = tls_private_key.eks.private_key_pem
   sensitive = true
 }
 ###############################################################
@@ -88,10 +71,6 @@ output "vpc_id" {
   value = module.vpc.vpc_id
 }
 
-output "eks_elastic" {
-  value = var.eks_elastic
-}
-
-output "eks_web" {
-  value = var.eks_web
+output "cluster_name" {
+  value = var.cluster_name
 }

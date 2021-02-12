@@ -1,49 +1,32 @@
 # Key pair for access to bastion host
 ########################################################
-resource "random_pet" "a" {
+resource "random_pet" "jumpbox" {
   length = 2
 }
-resource "tls_private_key" "a" {
+resource "tls_private_key" "jumpbox" {
   algorithm = "RSA"
 }
 module "key_pair_jumpbox" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name   = random_pet.a.id
-  public_key = tls_private_key.a.public_key_openssh
+  key_name   = random_pet.jumpbox.id
+  public_key = tls_private_key.jumpbox.public_key_openssh
 }
 ########################################################
 
 
-# Key pair for access to elastic nodes
+# Key pair for access to eks worker nodes
 ########################################################
-resource "random_pet" "b" {
+resource "random_pet" "eks" {
   length = 2
 }
-resource "tls_private_key" "b" {
+resource "tls_private_key" "eks" {
   algorithm = "RSA"
 }
-module "key_pair_elastic" {
+module "key_pair_eks" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name   = random_pet.b.id
-  public_key = tls_private_key.b.public_key_openssh
-}
-########################################################
-
-
-# Key pair for access to web nodes
-########################################################
-resource "random_pet" "c" {
-  length = 2
-}
-resource "tls_private_key" "c" {
-  algorithm = "RSA"
-}
-module "key_pair_web" {
-  source = "terraform-aws-modules/key-pair/aws"
-
-  key_name   = random_pet.c.id
-  public_key = tls_private_key.c.public_key_openssh
+  key_name   = random_pet.eks.id
+  public_key = tls_private_key.eks.public_key_openssh
 }
 ########################################################

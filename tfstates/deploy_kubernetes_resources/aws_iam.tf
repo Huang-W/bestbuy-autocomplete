@@ -1,15 +1,15 @@
 ###############################################################
-# Identifies the EKS elastic cluster
+# Identifies the EKS cluster
 ###############################################################
-data "tls_certificate" "example" {
-  url = data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url
+data "tls_certificate" "eks" {
+  url = data.terraform_remote_state.vpc.outputs.eks_oidc_issuer_url
 }
 resource "aws_iam_openid_connect_provider" "default" {
-  url = data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url
+  url = data.terraform_remote_state.vpc.outputs.eks_oidc_issuer_url
   client_id_list = [
     "sts.amazonaws.com"
   ]
-  thumbprint_list = [data.tls_certificate.example.certificates[0].sha1_fingerprint]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
 }
 ###############################################################
 
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.terraform_remote_state.vpc.outputs.eks_elastic_oidc_issuer_url, "https://", "")}:sub"
+      variable = "${replace(data.terraform_remote_state.vpc.outputs.eks_oidc_issuer_url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
     }
 

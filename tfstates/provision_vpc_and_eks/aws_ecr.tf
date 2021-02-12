@@ -14,7 +14,7 @@ data "aws_ecr_authorization_token" "bestbuy" {}
 
 
 ###############################################################
-# ECR - stores one image for a one-off job to index the elasticsearch cluster
+# ECR - stores an image for a one-off job to index the elasticsearch cluster
 ###############################################################
 resource "aws_ecr_repository" "elastic_indexer" {
   name                 = "elastic_indexer"

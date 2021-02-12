@@ -2,10 +2,6 @@ provider "aws" {
   region                  = var.region
   shared_credentials_file = "~/.aws/credentials"
   profile                 = "default"
-  ignore_tags {
-    # ignore any state-changes due to eks-related tags assigned in the upper modules
-    key_prefixes = ["kubernetes.io/cluster/"]
-  }
 }
 
 # Kubernetes provider
@@ -16,9 +12,8 @@ provider "aws" {
 # You should **not** schedule deployments and services in this workspace. This keeps workspaces modular (one for provision EKS, another for scheduling Kubernetes resources) as per best practices.
 
 provider "kubernetes" {
-  alias = "elastic"
-  host                   = data.aws_eks_cluster.elastic.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.elastic.certificate_authority.0.data)
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
     command     = "aws"
@@ -26,35 +21,13 @@ provider "kubernetes" {
       "eks",
       "get-token",
       "--cluster-name",
-      var.eks_elastic
+      var.cluster_name
     ]
   }
 }
-data "aws_eks_cluster" "elastic" {
-  name = module.eks_elastic.cluster_id
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
 }
-data "aws_eks_cluster_auth" "elastic" {
-  name = module.eks_elastic.cluster_id
-}
-
-provider "kubernetes" {
-  alias = "web"
-  host                   = data.aws_eks_cluster.web.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.web.certificate_authority.0.data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
-    command     = "aws"
-    args = [
-      "eks",
-      "get-token",
-      "--cluster-name",
-      var.eks_web
-    ]
-  }
-}
-data "aws_eks_cluster" "web" {
-  name = module.eks_web.cluster_id
-}
-data "aws_eks_cluster_auth" "web" {
-  name = module.eks_web.cluster_id
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
 }
