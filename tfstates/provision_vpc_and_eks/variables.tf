@@ -24,7 +24,7 @@ variable "vpc_public_subnets" {
 }
 
 variable "elasticache_subnets" {
-  type = list(string)
+  type    = list(string)
   default = ["10.1.7.0/24", "10.1.8.0/24", "10.1.9.0/24"]
 }
 
@@ -33,11 +33,11 @@ variable "my_home_network" {
 }
 
 variable "cluster_name" {
-  type = string
+  type    = string
   default = "bestbuy-autocomplete"
 }
 
 variable "azs" {
-  type = list(string)
+  type    = list(string)
   default = ["usw2-az1", "usw2-az2", "usw2-az3"]
 }

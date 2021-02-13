@@ -2,10 +2,10 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "14.0.0"
 
-  cluster_name                = var.cluster_name
-  cluster_version             = "1.18"
-  subnets                     = module.vpc.private_subnets
-  vpc_id                      = module.vpc.vpc_id
+  cluster_name    = var.cluster_name
+  cluster_version = "1.18"
+  subnets         = module.vpc.private_subnets
+  vpc_id          = module.vpc.vpc_id
 
   # attach_worker_cni_policy = false
   # enable_irsa = true
