@@ -24,3 +24,14 @@ module "node_sg" {
     }
   ]
 }
+
+module "elasticache_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  name        = "elasticache-node-group"
+  description = "security group for elasticache nodes with redis-tcp open to eks subnets"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks = var.vpc_private_subnets
+  ingress_rules       = ["redis-tcp"]
+}

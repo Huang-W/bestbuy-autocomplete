@@ -8,15 +8,6 @@ resource "helm_release" "elastic" {
     name  = "service.type"
     value = "ClusterIP"
   }
-  /**
-  values = [
-    <<EOF
-service:
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-EOF
-  ]
-  */
   depends_on = [kubernetes_service_account.aws_load_balancer_controller]
 }
 
@@ -44,10 +35,9 @@ resource "kubernetes_job" "init_elastic" {
         restart_policy = "Never"
       }
     }
-    backoff_limit = 3 # retry 3 times before failure
-    completions = 1 # job attempts should be serial
+    backoff_limit              = 3 # retry 3 times before failure
+    completions                = 1 # job attempts should be serial
     ttl_seconds_after_finished = 0 # remove pod upon job completion
   }
-  wait_for_completion = true
-  depends_on          = [helm_release.elastic]
+  depends_on = [helm_release.elastic]
 }

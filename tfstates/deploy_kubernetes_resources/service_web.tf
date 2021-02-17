@@ -8,7 +8,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     }
     namespace = "kube-system"
     annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.aws_load_balancer_controller.arn
+      "eks.amazonaws.com/role-arn" = data.terraform_remote_state.vpc.outputs.iam_load_balancer_controller_arn
     }
   }
 }
@@ -36,8 +36,8 @@ resource "kubernetes_deployment" "node_web_deployment" {
       }
       spec {
         container {
-          name  = "bestbuy-web"
-          image = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
+          name              = "bestbuy-web"
+          image             = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
           image_pull_policy = "Always"
           env {
             name  = "DEPLOYMENT_TYPE"

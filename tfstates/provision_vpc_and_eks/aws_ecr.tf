@@ -1,4 +1,4 @@
-###############################################################
+
 # ECR - web container images
 ###############################################################
 resource "aws_ecr_repository" "bestbuy" {
@@ -13,7 +13,7 @@ data "aws_ecr_authorization_token" "bestbuy" {}
 ###############################################################
 
 
-###############################################################
+
 # ECR - stores an image for a one-off job to index the elasticsearch cluster
 ###############################################################
 resource "aws_ecr_repository" "elastic_indexer" {

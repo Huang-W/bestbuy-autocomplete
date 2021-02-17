@@ -1,4 +1,4 @@
-###############################################################
+
 # Identifies the EKS cluster
 ###############################################################
 data "tls_certificate" "eks" {
@@ -14,7 +14,7 @@ resource "aws_iam_openid_connect_provider" "default" {
 ###############################################################
 
 
-###############################################################
+
 # Allows the EKS cluster to create Load Balancers using the AWS API
 ###############################################################
 data "aws_iam_policy_document" "assume_role_policy" {
@@ -44,7 +44,7 @@ resource "aws_iam_role_policy_attachment" "test_attach" {
 ###############################################################
 
 
-###############################################################
+
 # IAM - A policy that allows EKS to create load balancers using the AWS API
 ###############################################################
 resource "aws_iam_policy" "policy" {
