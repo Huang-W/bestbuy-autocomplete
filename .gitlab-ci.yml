@@ -19,10 +19,6 @@ test_web:
     - npm --prefix ./web install ./web
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH != "master"'
 
 build_web:
   tags:
