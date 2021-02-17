@@ -37,7 +37,7 @@ build_web:
       when: never
     - changes:
         - web/*
-    - when: manual
+    - when: never
 
 deploy_web:
   tags:
@@ -58,4 +58,4 @@ deploy_web:
       when: never
     - changes:
         - web/*
-    - when: manual
+    - when: never
