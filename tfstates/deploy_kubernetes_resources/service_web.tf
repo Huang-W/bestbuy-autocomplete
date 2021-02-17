@@ -37,18 +37,18 @@ resource "kubernetes_deployment" "node_web_deployment" {
       spec {
         container {
           name              = "bestbuy-web"
-          image             = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy}:1.0", "https://", "")
+          image             = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_bestbuy}:cache", "https://", "")
           image_pull_policy = "Always"
           env {
             name  = "DEPLOYMENT_TYPE"
             value = "ENV"
           }
           env {
-            name  = "ES_ADDRESS"
+            name  = "ELASTICSEARCH_ADDRESS"
             value = data.kubernetes_service.elastic.metadata.0.name
           }
           env {
-            name  = "ES_PORT"
+            name  = "ELASTICSEARCH_PORT"
             value = 9200
           }
           env {
