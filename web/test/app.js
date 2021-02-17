@@ -33,9 +33,7 @@ describe("Signature", () => {
         .get("/search/fridge")
         .end((err, res) => {
           res.should.have.status(404);
-          res.body.should.be
-            .an("array")
-            .that.does.include("no products found...");
+          res.body.should.be.an("array");
         });
       done();
     });

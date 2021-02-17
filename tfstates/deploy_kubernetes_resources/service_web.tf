@@ -55,6 +55,18 @@ resource "kubernetes_deployment" "node_web_deployment" {
             name  = "WEB_PORT"
             value = 3000
           }
+          env {
+            name  = "REDIS_CACHING_ENABLED"
+            value = "on"
+          }
+          env {
+            name  = "REDIS_ADDRESS"
+            value = data.terraform_remote_state.vpc.outputs.elasticache_endpoint
+          }
+          env {
+            name  = "REDIS_PORT"
+            value = 6379
+          }
           port {
             container_port = 3000
           }
