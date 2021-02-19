@@ -41,24 +41,25 @@
               },
             })
             .autocomplete("instance")._renderItem = function (ul, item) {
-            // Highlight found search terms in dropdown list
-            //
+            // start by creating the regex expression
             let terms = this.term.split(" ");
-            let newText = String(item.value);
-            for (let term of terms) {
-              let re = new RegExp(term, "gi");
-              let found = newText.match(re);
-              if (found)
-                found.forEach((match) => {
-                  newText = newText.replace(
-                    match,
-                    `<span class='ui-state-highlight'>${match}</span>`
-                  );
-                });
-            }
+            terms = terms.map((term) => "(" + term + ")");
+            terms = terms.join("|");
+            let re = new RegExp(terms, "gi");
+
+            // highlight each term when it occurs in the productName
+            let productName = item.value
+              ? String(item.value)
+              : String(item.name);
+            let productUrl = item.url ? String(item.url) : "#";
+            productName = productName.replaceAll(re, function (match) {
+              return `<span class='ui-state-highlight'>${match}</span>`;
+            });
+
+            // return the highlighted element and reference its matching bestbuy url
             return $("<li></li>")
               .data("item.autocomplete", item)
-              .append("<div>" + newText + "</div>")
+              .append(`<div><a href="${productUrl}">${productName}</a></div>`)
               .appendTo(ul);
           };
         });

@@ -29,15 +29,17 @@ resource "kubernetes_job" "init_elastic" {
       spec {
         container {
           name    = "go-runner"
-          image   = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_elastic}:1.0", "https://", "")
+          image   = replace("${data.terraform_remote_state.vpc.outputs.ecr_url}/${data.terraform_remote_state.vpc.outputs.ecr_repo_elastic}:init", "https://", "")
           command = ["/go/bin/es-indexer", "-addr=http://${data.kubernetes_service.elastic.metadata.0.name}:9200"]
         }
         restart_policy = "Never"
       }
     }
     backoff_limit              = 3 # retry 3 times before failure
-    completions                = 1 # job attempts should be serial
     ttl_seconds_after_finished = 0 # remove pod upon job completion
+  }
+  timeouts {
+    create = "2m"
   }
   depends_on = [helm_release.elastic]
 }
