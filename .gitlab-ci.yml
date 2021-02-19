@@ -36,7 +36,9 @@ build_web:
     - if: '$CI_COMMIT_BRANCH != "master"'
       when: never
     - changes:
-        - web/*
+        - web/**.js
+        - web/**.css
+        - web/**.html
     - when: never
 
 deploy_web:
@@ -57,5 +59,7 @@ deploy_web:
     - if: '$CI_COMMIT_BRANCH != "master"'
       when: never
     - changes:
-        - web/*
+        - web/**.js
+        - web/**.css
+        - web/**.html
     - when: never
