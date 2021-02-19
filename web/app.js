@@ -29,6 +29,7 @@ let redis_port;
 
 // feature toggle
 let redis_caching_enabled;
+let return_url_along_with_product;
 
 switch (deployment_type) {
   case "LOCAL":
@@ -38,6 +39,7 @@ switch (deployment_type) {
     redis_address = "localhost";
     redis_port = "6379";
     redis_caching_enabled = "off";
+    return_url_along_with_product = "off";
     break;
   case "DOCKER":
     web_port = "3000";
@@ -46,6 +48,7 @@ switch (deployment_type) {
     redis_address = "redis-node1";
     redis_port = "6379";
     redis_caching_enabled = "off";
+    return_url_along_with_product = "off";
     break;
   case "ENV":
     web_port = process.env.WEB_PORT;
@@ -54,6 +57,7 @@ switch (deployment_type) {
     redis_address = process.env.REDIS_ADDRESS;
     redis_port = process.env.REDIS_PORT;
     redis_caching_enabled = process.env.REDIS_CACHING_ENABLED;
+    return_url_along_with_product = process.env.RETURN_URL_ALONG_WITH_PRODUCT;
     break;
 }
 
@@ -117,7 +121,14 @@ app.get("/search/:term?", async (req, res) => {
         let hits = new Array();
 
         for (let hit of result.body.hits.hits) {
-          hits.push(hit._source.name);
+          if (return_url_along_with_product == "on") {
+            hits.push({
+              name: hit._source.name,
+              url: hit._source.url,
+            });
+          } else {
+            hits.push(hit._source.name);
+          }
         }
 
         json_response_string = JSON.stringify(hits);
