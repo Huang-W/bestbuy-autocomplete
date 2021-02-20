@@ -17,12 +17,9 @@ module "node_sg" {
 
   ingress_cidr_blocks = concat(var.vpc_public_subnets, var.vpc_private_subnets)
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
-  ingress_with_source_security_group_id = [
-    {
-      rule                     = "ssh-tcp"
-      source_security_group_id = module.jumpbox_sg.this_security_group_id
-    }
-  ]
+  ingress_with_self = [{
+    rule = "ssh-tcp"
+  }]
 }
 
 module "elasticache_sg" {
