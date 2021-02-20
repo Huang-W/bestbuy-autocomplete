@@ -19,6 +19,12 @@ test_web:
     - npm --prefix ./web install ./web
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
+  rules:
+    - changes:
+        - web/**.js
+        - web/**.css
+        - web/**.html
+    - when: never
 
 build_web:
   tags:
