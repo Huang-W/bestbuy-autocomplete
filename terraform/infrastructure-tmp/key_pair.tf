@@ -7,7 +7,8 @@ resource "tls_private_key" "jumpbox" {
   algorithm = "RSA"
 }
 module "key_pair_jumpbox" {
-  source = "terraform-aws-modules/key-pair/aws"
+  source  = "terraform-aws-modules/key-pair/aws"
+  version = "1.0.0"
 
   key_name   = random_pet.jumpbox.id
   public_key = tls_private_key.jumpbox.public_key_openssh
@@ -24,7 +25,8 @@ resource "tls_private_key" "eks" {
   algorithm = "RSA"
 }
 module "key_pair_eks" {
-  source = "terraform-aws-modules/key-pair/aws"
+  source  = "terraform-aws-modules/key-pair/aws"
+  version = "1.0.0"
 
   key_name   = random_pet.eks.id
   public_key = tls_private_key.eks.public_key_openssh

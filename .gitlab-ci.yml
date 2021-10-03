@@ -1,9 +1,3 @@
-workflow:
-  rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-doc\s*$/ || $CI_COMMIT_BRANCH == "pre-commit" || $CI_COMMIT_BRANCH == "gitlab-ci" || $CI_COMMIT_TAG != null
-      when: never
-    - when: always
-
 stages:
   - test
   - build
@@ -19,12 +13,7 @@ test_web:
     - npm --prefix ./web install ./web
     - npm --prefix ./web install mocha
     - npm --prefix ./web run test
-  rules:
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
-    - when: never
+  when: manual
 
 build_web:
   tags:
@@ -38,14 +27,7 @@ build_web:
     - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
     - docker tag "$ECR_REPO" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
     - docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "master"'
-      when: never
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
-    - when: never
+  when: manual
 
 deploy_web:
   tags:
@@ -61,11 +43,4 @@ deploy_web:
     - kubectl config set-context $cluster --cluster=$cluster --user=admin
     - kubectl config use-context $cluster
     - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA --namespace=default
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "master"'
-      when: never
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
-    - when: never
+  when: manual

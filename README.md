@@ -46,7 +46,7 @@ have a product catalogue of around 3 million objects and only want to autocomple
 
 #### Software used
 
-- the latest version of [Terraform](https://www.terraform.io/)
+- [Terraform](https://www.terraform.io/) v1.0.8
 - [wget](https://www.gnu.org/software/wget/), required for aws eks module
 - an [AWS account](https://portal.aws.amazon.com/billing/signup?nc2=h_ct&src=default&redirect_url=https%3A%2F%2Faws.amazon.com%2Fregistration-confirmation#/start) with IAM permissions listed on the [EKS module documentation](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/iam-permissions.md)
 - a configured [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
@@ -54,5 +54,5 @@ have a product catalogue of around 3 million objects and only want to autocomple
 - [AWS IAM Authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html)
 - [helm](https://helm.sh/), to install kubernetes packages
 - [Docker engine](https://docs.docker.com/get-docker/)
-- a mirrored [GitLab](https://about.gitlab.com/) repository for CI/CD
+- a [GitLab](https://about.gitlab.com/) repository for CI/CD
 - Git [pre-commits](https://pre-commit.com/) (optional)

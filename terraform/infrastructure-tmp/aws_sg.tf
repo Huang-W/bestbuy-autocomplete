@@ -1,5 +1,6 @@
 module "jumpbox_sg" {
-  source = "terraform-aws-modules/security-group/aws//modules/ssh"
+  source  = "terraform-aws-modules/security-group/aws//modules/ssh"
+  version = "4.3.0"
 
   name        = "ssh_public"
   description = "Security group for jumpbox with ssh port open to home network"

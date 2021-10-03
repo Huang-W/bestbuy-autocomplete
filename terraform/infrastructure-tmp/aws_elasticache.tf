@@ -13,7 +13,7 @@ resource "aws_elasticache_replication_group" "cache" {
   engine_version                = "3.2.4"
   parameter_group_name          = "default.redis3.2.cluster.on"
   subnet_group_name             = aws_elasticache_subnet_group.cache.name
-  security_group_ids            = [module.elasticache_sg.this_security_group_id]
+  security_group_ids            = [module.elasticache_sg.security_group_id]
   port                          = 6379
 
   cluster_mode {

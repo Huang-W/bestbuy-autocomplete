@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "14.0.0"
+  version = "17.20.0"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.18"
@@ -21,8 +21,8 @@ module "eks" {
       asg_desired_capacity          = 3
       asg_max_size                  = 5
       asg_min_size                  = 3
-      key_name                      = module.key_pair_eks.this_key_pair_key_name
-      additional_security_group_ids = [module.node_sg.this_security_group_id]
+      key_name                      = module.key_pair_eks.key_pair_key_name
+      additional_security_group_ids = [module.node_sg.security_group_id]
     }
   ]
 }

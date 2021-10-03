@@ -9,8 +9,8 @@ module "vpc" {
   public_subnets          = var.vpc_public_subnets
   elasticache_subnets     = var.elasticache_subnets
   enable_nat_gateway      = true
-  single_nat_gateway      = false
-  one_nat_gateway_per_az  = true
+  single_nat_gateway      = true
+  one_nat_gateway_per_az  = false
   map_public_ip_on_launch = true
 
   # these tags allow the EKS clusters to discover these subnets

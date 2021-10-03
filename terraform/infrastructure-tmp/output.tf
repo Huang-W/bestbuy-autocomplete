@@ -52,14 +52,14 @@ output "elasticache_endpoint" {
 # Key-pair
 ###############################################################
 output "jumpbox_key_pair_fingerprint" {
-  value = module.key_pair_jumpbox.this_key_pair_fingerprint
+  value = module.key_pair_jumpbox.key_pair_fingerprint
 }
 output "jumpbox_key_pair_private_pem" {
   value     = tls_private_key.jumpbox.private_key_pem
   sensitive = true
 }
 output "eks_key_pair_fingerprint" {
-  value = module.key_pair_eks.this_key_pair_fingerprint
+  value = module.key_pair_eks.key_pair_fingerprint
 }
 output "eks_key_pair_private_pem" {
   value     = tls_private_key.eks.private_key_pem
