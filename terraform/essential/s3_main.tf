@@ -47,6 +47,7 @@ resource "aws_iam_role" "terraform-remote-state-replication-role" {
 
 
 data "aws_iam_policy_document" "s3-assume-role-policy" {
+  policy_id = "s3-assume-role-policy"
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -58,6 +59,7 @@ data "aws_iam_policy_document" "s3-assume-role-policy" {
 }
 
 data "aws_iam_policy_document" "terraform-remote-state-replication-policy" {
+  policy_id = "terraform-remote-state-replication-policy"
   statement {
     actions = [
       "s3:GetReplicationConfiguration",

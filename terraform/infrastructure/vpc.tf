@@ -1,15 +1,23 @@
-resource "aws_vpc" "bestbuy-vpc" {
+resource "aws_vpc" "bestbuy_vpc" {
   cidr_block       = var.vpc_cidr
   instance_tenancy = "default"
 
   tags = merge(local.common_tags, {
-    Name = "bestbuy-vpc"
+    Name = "bestbuy_vpc"
     Type = "infrastructure"
   })
 }
 
+output "bestbuy_vpc_id" {
+  value = aws_vpc.bestbuy_vpc.id
+}
+
+output "bestbuy_vpc_cidr_block" {
+  value = aws_vpc.bestbuy_vpc.cidr_block
+}
+
 resource "aws_subnet" "pv1" {
-  vpc_id               = aws_vpc.bestbuy-vpc.id
+  vpc_id               = aws_vpc.bestbuy_vpc.id
   for_each             = local.private_subnets
   cidr_block           = each.value
   availability_zone_id = each.key
@@ -22,8 +30,12 @@ resource "aws_subnet" "pv1" {
   })
 }
 
+output "pv1_subnet_ids" {
+  value = values(aws_subnet.pv1)[*].id
+}
+
 resource "aws_subnet" "pb1" {
-  vpc_id               = aws_vpc.bestbuy-vpc.id
+  vpc_id               = aws_vpc.bestbuy_vpc.id
   for_each             = local.public_subnets
   cidr_block           = each.value
   availability_zone_id = each.key
@@ -36,8 +48,12 @@ resource "aws_subnet" "pb1" {
   })
 }
 
+output "pb1_subnet_ids" {
+  value = values(aws_subnet.pb1)[*].id
+}
+
 resource "aws_subnet" "elasticache" {
-  vpc_id               = aws_vpc.bestbuy-vpc.id
+  vpc_id               = aws_vpc.bestbuy_vpc.id
   for_each             = local.elasticache_subnets
   cidr_block           = each.value
   availability_zone_id = each.key
@@ -46,4 +62,24 @@ resource "aws_subnet" "elasticache" {
     Name = "elasticache-${each.key}"
     Type = "infrastructure"
   })
+}
+
+output "elasticache_subnet_ids" {
+  value = values(aws_subnet.elasticache)[*].id
+}
+
+resource "aws_subnet" "eks" {
+  vpc_id               = aws_vpc.bestbuy_vpc.id
+  for_each             = local.eks_subnets
+  cidr_block           = each.value
+  availability_zone_id = each.key
+
+  tags = merge(local.common_tags, {
+    Name = "eks-${each.key}"
+    Type = "infrastructure"
+  })
+}
+
+output "eks_subnet_ids" {
+  value = values(aws_subnet.eks)[*].id
 }

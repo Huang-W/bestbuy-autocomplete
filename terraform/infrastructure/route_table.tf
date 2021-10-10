@@ -1,6 +1,6 @@
 resource "aws_route_table" "pv1" {
   for_each = local.private_subnets
-  vpc_id   = aws_vpc.bestbuy-vpc.id
+  vpc_id   = aws_vpc.bestbuy_vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -16,7 +16,7 @@ resource "aws_route_table" "pv1" {
 
 resource "aws_route_table" "pb1" {
   for_each = local.public_subnets
-  vpc_id   = aws_vpc.bestbuy-vpc.id
+  vpc_id   = aws_vpc.bestbuy_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -32,12 +32,7 @@ resource "aws_route_table" "pb1" {
 
 resource "aws_route_table" "elasticache" {
   for_each = local.elasticache_subnets
-  vpc_id   = aws_vpc.bestbuy-vpc.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
+  vpc_id   = aws_vpc.bestbuy_vpc.id
 
   tags = merge(local.common_tags, {
     Name = "pb1"

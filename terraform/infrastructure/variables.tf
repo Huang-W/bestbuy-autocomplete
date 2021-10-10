@@ -18,6 +18,10 @@ variable "public_subnets" {
   type = list(string)
 }
 
+variable "eks_subnets" {
+  type = list(string)
+}
+
 variable "elasticache_subnets" {
   type = list(string)
 }
@@ -39,4 +43,5 @@ locals {
   private_subnets     = zipmap(var.subnet_availability_zones, var.private_subnets)
   public_subnets      = zipmap(var.subnet_availability_zones, var.public_subnets)
   elasticache_subnets = zipmap(var.subnet_availability_zones, var.elasticache_subnets)
+  eks_subnets         = zipmap(var.subnet_availability_zones, var.eks_subnets)
 }

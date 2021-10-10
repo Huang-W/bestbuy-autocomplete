@@ -16,6 +16,6 @@ resource "aws_eip" "nat-ip" {
   vpc = true
   tags = merge(local.common_tags, {
     Name = "nat1-ip"
-    Type = "ip"
+    Type = "eip"
   })
 }

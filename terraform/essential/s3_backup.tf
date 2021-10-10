@@ -7,6 +7,14 @@ resource "aws_s3_bucket" "terraform-remote-state-backup" {
     enabled = true
   }
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
   tags = merge(local.common_tags, {
     Name = "${var.environment_name}-${var.region}-terraform-remote-state-backup"
     Type = "storage"
