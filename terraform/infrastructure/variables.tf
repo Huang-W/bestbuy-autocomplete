@@ -26,7 +26,7 @@ variable "elasticache_subnets" {
   type = list(string)
 }
 
-variable "cluster_name" {
+variable "eks01_service_ipv4_cidr" {
   type = string
 }
 

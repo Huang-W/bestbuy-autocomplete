@@ -25,8 +25,9 @@ resource "aws_db_parameter_group" "postgres" {
   family = "postgres13"
 
   parameter {
-    name  = "client_encoding"
-    value = "UTF8"
+    apply_method = "pending-reboot"
+    name         = "client_encoding"
+    value        = "UTF8"
   }
 }
 

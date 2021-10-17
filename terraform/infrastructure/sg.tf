@@ -22,7 +22,7 @@ module "elasticache_sg" {
   description = "security group for elasticache nodes with redis-tcp open to eks subnets"
   vpc_id      = aws_vpc.bestbuy_vpc.id
 
-  ingress_cidr_blocks = var.eks_subnets # change this to pod security groups
+  ingress_cidr_blocks = var.private_subnets # change this to pod security groups
   ingress_rules       = ["redis-tcp"]
 }
 
@@ -39,7 +39,7 @@ module "postgres_sg" {
   description = "security group for postgres db with postgresql-tcp open to eks subnets"
   vpc_id      = aws_vpc.bestbuy_vpc.id
 
-  ingress_cidr_blocks = var.eks_subnets # change this to pod security groups
+  ingress_cidr_blocks = var.private_subnets # change this to pod security groups
   ingress_rules       = ["postgresql-tcp"]
 }
 

@@ -1,6 +1,7 @@
 resource "aws_elasticache_subnet_group" "cache" {
   name       = "elasticache-subnets"
   subnet_ids = data.terraform_remote_state.infrastructure.outputs.elasticache_subnet_ids
+  tags       = {}
 }
 
 resource "aws_elasticache_replication_group" "cache" {
