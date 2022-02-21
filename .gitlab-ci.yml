@@ -1,71 +1,24 @@
+---
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /-doc\s*$/ || $CI_COMMIT_BRANCH == "pre-commit" || $CI_COMMIT_BRANCH == "gitlab-ci" || $CI_COMMIT_TAG != null
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
       when: never
-    - when: always
+    - if: '$CI_COMMIT_BRANCH'
 
 stages:
-  - test
-  - build
-  - deploy
+  - plan
 
-test_web:
-  tags:
-    - test
-  stage: test
-  image: node:14
-  script:
-    - echo "Running tests"
-    - npm --prefix ./web install ./web
-    - npm --prefix ./web install mocha
-    - npm --prefix ./web run test
-  rules:
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
-    - when: never
-
-build_web:
-  tags:
-    - docker
-    - dind
-  stage: build
-  image: docker:19.03.15
-  services:
-    - docker:19.03.15-dind
-  script:
-    - docker build -t "$ECR_REPO" -f ./web/Dockerfile ./web
-    - docker tag "$ECR_REPO" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
-    - docker push "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA"
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "master"'
-      when: never
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
-    - when: never
-
-deploy_web:
-  tags:
-    - cluster
-    - kubernetes
-  stage: deploy
+dummy_plan:
+  stage: plan
   image:
-    name: gcr.io/cloud-builders/kubectl:latest
+    name: hashicorp/terraform:1.1.6
+    entrypoint: [""]
   script:
-    - cluster="arn:aws:eks:$AWS_REGION:$AWS_ACCOUNT_ID:cluster/$EKS_CLUSTER"
-    - kubectl config set-cluster $cluster --server="$KUBE_URL" --insecure-skip-tls-verify=true
-    - kubectl config set-credentials admin --token="$KUBE_TOKEN"
-    - kubectl config set-context $cluster --cluster=$cluster --user=admin
-    - kubectl config use-context $cluster
-    - kubectl set image deployment/node-deployment $WEB_CONTAINER=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$CI_COMMIT_SHA --namespace=default
+    - cd terraform/infrastructure
+    - terraform init
+    - terraform plan
   rules:
-    - if: '$CI_COMMIT_BRANCH != "master"'
-      when: never
-    - changes:
-        - web/**.js
-        - web/**.css
-        - web/**.html
+    - if: '$CI_COMMIT_REF_NAME != "master"'
+      when: always
     - when: never
