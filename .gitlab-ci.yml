@@ -22,3 +22,6 @@ dummy_plan:
     - if: '$CI_COMMIT_REF_NAME != "master"'
       when: always
     - when: never
+  tags:
+    - docker
+    - dind
